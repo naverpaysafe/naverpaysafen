@@ -1,0 +1,35 @@
+if (typeof nmp == "undefined") {
+    nmp = {};
+};
+
+if (typeof nmp.component == "undefined") {
+    nmp.component = {};
+};
+
+nmp.component.OrderSheetUtils = jindo.$Class({
+	_aChargeAmountList : [50000, 100000, 300000, 500000, 1000000],
+
+    $init : function(htOption) {
+    },
+
+	findAllAvailableChargeAmounts : function(nPayAmount, nRemainChargeAmount) {
+		var waAvailableChargeAmounts = $A(this._aChargeAmountList).filter(function(v) {
+			return (nPayAmount <= v) && (nRemainChargeAmount > v);
+		});
+		if (nPayAmount > 0) {
+			var nMinimumChargeAmount = (Math.floor(nPayAmount / 10000) * 10000) + ((nPayAmount % 10000 > 0) ? 1 : 0) * 10000;
+
+			if (!waAvailableChargeAmounts.has(nMinimumChargeAmount) && nMinimumChargeAmount < nRemainChargeAmount) {
+				waAvailableChargeAmounts.unshift(nMinimumChargeAmount);
+			}
+		}
+		if (!waAvailableChargeAmounts.has(nRemainChargeAmount)) {
+			waAvailableChargeAmounts.push(nRemainChargeAmount);
+		}
+		return waAvailableChargeAmounts;
+	},
+
+    "" : ""
+});
+
+var oOrderSheetUtil = new nmp.component.OrderSheetUtils();
